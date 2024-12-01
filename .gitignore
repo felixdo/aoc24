@@ -1,0 +1,13 @@
+#
+# aoc resources shouldnt be committed to git, so ignore them here.
+#
+*~
+\#*\#
+
+.clj-kondo/
+.cpcache/
+.lsp/
+.nrepl-port
+
+resources/day1/input-1.txt
+
