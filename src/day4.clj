@@ -31,18 +31,42 @@
                     (= \S (char-at (dir (dir (dir start))))))
                  1
                  0))
-        rf (fn [result start]
-             (+ result
-                (xmas up start) (xmas dn start) (xmas r  start) (xmas l  start)
-                (xmas ul start) (xmas ur start) (xmas dl start) (xmas dr start)))
-        ]
-    (->> data
-         (map-indexed (fn [i c] [i c]))
-         (filter #(= \X (second %)))
-         (map first)
-         (reduce rf 0))))
+        x-mas (fn [start]
+                (if (and (= \A (char-at start))
+                         (or (and
+                              (= \M (char-at (ul start)))    ;; M S
+                              (= \M (char-at (dl start)))    ;;  A
+                              (= \S (char-at (ur start)))    ;; M S
+                              (= \S (char-at (dr start))))
+                             (and
+                              (= \S (char-at (ul start)))    ;; S M
+                              (= \S (char-at (dl start)))    ;;  A
+                              (= \M (char-at (ur start)))    ;; S M
+                              (= \M (char-at (dr start))))
+                             (and
+                              (= \S (char-at (ul start)))    ;; S S
+                              (= \M (char-at (dl start)))    ;;  A
+                              (= \S (char-at (ur start)))    ;; M M
+                              (= \M (char-at (dr start))))
+                             (and
+                              (= \M (char-at (ul start)))    ;; M M 
+                              (= \S (char-at (dl start)))    ;;  A
+                              (= \M (char-at (ur start)))    ;; S S
+                              (= \S (char-at (dr start))))))
+                  1
+                  0))
+        rf-part1 (fn [result start]
+                   (+ result
+                      (xmas up start) (xmas dn start) (xmas r  start) (xmas l  start)
+                      (xmas ul start) (xmas ur start) (xmas dl start) (xmas dr start)))
+        rf-part2 (fn [result start]
+                   (+ result
+                      (x-mas start)))]
+    {:part1 (reduce rf-part1 0 (range (count data)))
+     :part2 (reduce rf-part2 0 (range (count data)))
+     }))
 
-(comment "part 1"
+(comment "part 1 and 2"
   (with-open [r (-> "day4.txt"
                     io/resource
                     io/reader)]
